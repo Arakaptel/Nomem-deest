@@ -7,10 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
 <style>
 :root{
---primary:#738C9B;
---card:#000A35;
---bg:#000000;
---text:#C4C4C4;
+    --primary:#738C9B;
+    --card: rgba(0, 10, 53, 0.85); /* Adicionado canal alpha aqui para o blur funcionar melhor globalmente */
+    --bg:#000000;
+    --text:#C4C4C4;
 }
 body{
     margin:0;
@@ -43,97 +43,87 @@ h1{
     text-shadow:
         0 0 10px var(--primary),
         0 0 20px var(--primary);
-
 }
 
-/* Pesquisa Google */
-#google-search{
-    width:100%;
-    padding:14px;
-    margin-bottom:12px;
-    border-radius:12px;
-    border:1px solid var(--primary);
-    background:var(--card);
-    color:var(--text);
-    backdrop-filter:blur(8px);
-    outline:none;
-    font-family:inherit;
+/* Inputs de Pesquisa */
+.search-input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--primary);
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
 }
 
-#google-search:focus{
-    box-shadow:0 0 20px var(--primary);
-}
-
-/* Pesquisa de atalhos */
-#search{
-    width:100%;
-    padding:14px;
-    border-radius:12px;
-    border:1px solid var(--primary);
-    background:var(--card);
-    color:var(--text);
-    backdrop-filter:blur(8px);
-    outline:none;
-    font-family:inherit;
-}
-
-#search:focus{
-    box-shadow:0 0 20px var(--primary);
+.search-input:focus{
+    box-shadow: 0 0 15px var(--primary);
 }
 
 details{
-    max-width:1200px;
-    margin:20px auto;
+    max-width: 1200px;
+    margin: 20px auto;
 }
 
 summary{
     cursor:pointer;
     color:var(--primary);
     font-size:1.1rem;
-    margin-bottom:10px;
+    margin-bottom:15px;
     text-shadow:0 0 10px var(--primary);
 }
 
+/* Nova Grid em estilo Launcher de Celular */
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-    gap:12px;
-    margin-top:10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); /* Elementos menores e mais compactos */
+    gap: 16px;
+    margin-top: 10px;
 }
 
+/* Card Estilo App */
 .card{
-    display:flex;
-    align-items:center;
-    gap:10px;
-
-    text-decoration:none;
-    color:var(--text);
-
-    padding:12px;
-
-    background:var(--card);
-    backdrop-filter:blur(10px);
-
-    border-radius:14px;
-
-    border:1px solid rgba(115,140,155,.45);
-
-    transition:.25s ease;
-}
+    display: flex;
+    flex-direction: column; /* Alinha o ícone em cima e texto embaixo */
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+    padding: 10px 6px;
+    background: var(--card);
+    border-radius: 16px; /* Bordas mais arredondadas estilo app */
+    border: 1px solid rgba(115,140,155,.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform; /* Avisa o navegador para otimizar a animação */
 }
 
 .card:hover{
-    transform:translateY(-3px);
-
-    box-shadow:
-        0 0 10px #8fb8d1,
-        0 0 20px #8fb8d1,
-        0 0 35px rgba(143,184,209,.5);
+    transform: scale(1.08); /* Efeito de zoom suave ao invés de mover para cima */
+    box-shadow: 0 0 15px rgba(143,184,209,.4);
 }
 
+/* Ícone do App */
 .card img{
-    width:24px;
-    height:24px;
+    width: 42px; /* Tamanho perfeito para visualização em grid menor */
+    height: 42px;
+    border-radius: 10px; /* Deixa o favicon com cantos arredondados de app */
+    margin-bottom: 8px;
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo sutil caso o favicon seja transparente */
+    object-fit: contain;
+}
+
+/* Nome do App Pequeno Embaixo */
+.card span{
+    font-size: 0.7rem; /* Texto pequeno */
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limita a no máximo 2 linhas para não quebrar a grid */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
 }
 
 footer{
@@ -143,22 +133,26 @@ footer{
     font-size:.8rem;
 }
 </style>
-
 </head>
-
 <body>
 
 <header>
     <h1>Atalhos</h1>
 
-<form action="https://www.google.com/search" method="GET" target="_blank">
-    <input
-        id="google-search"
-        name="q"
-        placeholder="Pesquisar no Google..."
-        autocomplete="off">
-</form>
+    <form action="https://www.google.com/search" method="GET" target="_blank">
+        <input
+            id="google-search"
+            class="search-input"
+            name="q"
+            placeholder="Pesquisar no Google..."
+            autocomplete="off">
+    </form>
 
+    <input
+        id="search"
+        class="search-input"
+        placeholder="Filtrar atalhos..."
+        autocomplete="off">
 </header>
 
 <details open>
@@ -201,7 +195,6 @@ const data=[
 ["Arakaptel","https://github.com/Arakaptel/Nomen-deest/"]
 ];
 
-
 const container = document.getElementById("links");
 
 function render(filter = ""){
@@ -212,15 +205,14 @@ function render(filter = ""){
         name.toLowerCase().includes(filter.toLowerCase())
     )
     .forEach(([name,url]) => {
-
         const a = document.createElement("a");
-
         a.href = url;
         a.target = "_blank";
         a.className = "card";
 
+        // Adicionado loading="lazy" para performance e melhorias no favicon
         a.innerHTML = `
-            <img src="https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64">
+            <img src="https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64" loading="lazy" alt="">
             <span>${name}</span>
         `;
 
@@ -235,8 +227,6 @@ document
 .addEventListener("input", e => {
     render(e.target.value);
 });
-
-
 </script>
 
 </body>
